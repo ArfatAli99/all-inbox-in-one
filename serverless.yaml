@@ -1,0 +1,86 @@
+service: serveless-inbox
+
+# useDotenv: false
+
+plugins:
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  # environment:
+    # MONGODB_URI: ${env:MONGODB_URI}
+
+    # JWT_SECRET: ${env:JWT_SECRET}
+    # JWT_EXPIRATION_TIME: ${env:JWT_EXPIRATION_TIME}
+
+    # COINBASE_CLIENT_ID: ${env:COINBASE_CLIENT_ID}
+    # COINBASE_CLIENT_SECRET: ${env:COINBASE_CLIENT_SECRET}
+    # COINBASE_REDIRECT_URI: ${env:COINBASE_REDIRECT_URI}
+
+    # ENCRYPTION_KEY: ${env:ENCRYPTION_KEY}
+
+    # AUTH_REDIRECT_URI: ${env:AUTH_REDIRECT_URI}
+
+functions:
+  main:
+    handler: dist/serverless.handler
+    events:
+      - http:
+          method: ANY
+          path: /fbinbox/webhook/
+      - http:
+          method: POST
+          path: /fbinbox/outh-facebook/
+      - http:
+          method: POST
+          path: /fbinbox/get-all-fbpages/
+      - http:
+          method: POST
+          path: /fbinbox/save-fbpage-info/
+      - http:
+          method: POST
+          path: /fbinbox/get-page-conversations/
+      - http:
+          method: GET
+          path: /gbusiness/oauth-google/
+      - http:
+          method: GET
+          path: /gbusiness/redirect-from-google/
+      - http:
+          method: ANY
+          path: '/fbinbox/{proxy+}'
+      - http:
+          path: '/fbinbox/is-enabled-rdInbox'
+          method: POST
+      - http:
+          path: '/fbinbox/enable-rdInbox'
+          method: POST
+          cors:
+               origin: '*' # <-- Specify allowed origin
+               headers: '*' 
+      - http:
+          path: '/fbinbox/redirect-from-facebook'
+          method: GET
+          cors:
+               origin: '*' # <-- Specify allowed origin
+               headers: '*'             
+      - http:
+          path: '/messagepro/get-messagepro-logs'
+          method: POST
+          cors:
+               origin: '*' # <-- Specify allowed origin
+               headers: '*'        
+      - http:
+          path: '/fbinbox/disable-facebook-rdInbox'
+          method: POST
+          cors:
+               origin: '*' # <-- Specify allowed origin
+               headers: '*'               
+      - http:
+          path: '/messagepro/webhook-received-msg'
+          method: POST
+          cors:
+               origin: '*' # <-- Specify allowed origin
+               headers: '*'               
